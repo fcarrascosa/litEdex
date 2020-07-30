@@ -79,7 +79,7 @@ pipeline {
         sh 'git config user.name jenkins'
         sh 'npx standard-version'
         withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-           echo {GIT_USERNAME}
+           echo "{GIT_USERNAME}"
            sh "git push https://{GIT_USERNAME}:{GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git HEAD"
            sh "git push origin --tags"
         }
