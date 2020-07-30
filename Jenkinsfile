@@ -52,17 +52,17 @@ pipeline {
           stages {
             stage("Store Artifact in webroot") {
               steps {
-                sh "mkdir -p /host/var/lib/www/html/demos/${JOB_NAME.split('/')[0]}/${BRANCH_NAME}"
-                sh "cp -R ./dist/* /host/var/lib/www/html/demos/${JOB_NAME.split('/')[0]}/${BRANCH_NAME}"
+                sh "mkdir -p /host/var/lib/www/html/demos/${env.JOB_NAME.split('/')[0]}/${env.BRANCH_NAME}"
+                sh "cp -R ./dist/* /host/var/lib/www/html/demos/${env.JOB_NAME.split('/')[0]}/${env.BRANCH_NAME}"
                 echo "This branch's build has been successfully published to nginx server"
                 echo "You can test it at"
-                echo "https://demos.fcarrascosa.es/lit-edex/${BRANCH_NAME}"
+                echo "https://demos.fcarrascosa.es/lit-edex/${env.BRANCH_NAME}"
               }
             }
             stage("Store Url in Build Result") {
               steps {
                 script {
-                  def linkToEnv = '<a href="' + "https://demos.fcarrascosa.es/lit-edex/${BRANCH_NAME}" + '" target="_blank">Live Environment</a>'
+                  def linkToEnv = '<a href="' + "https://demos.fcarrascosa.es/lit-edex/${env.BRANCH_NAME}" + '" target="_blank">Live Environment</a>'
                   currentBuild.description = linkToEnv
                 }
               }
@@ -79,7 +79,7 @@ pipeline {
         sh 'git config user.name jenkins'
         sh 'npx standard-version'
         withCredentials([usernamePassword(credentialsId: 'github', userNameVariable: 'Username', passwordVariable: 'Password')]) {
-          sh "git push origin ${BRANCH_NAME}"
+          sh "git push origin ${env.BRANCH_NAME}"
           sh "git push origin --tags"
         }
       }
