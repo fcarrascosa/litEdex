@@ -81,6 +81,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git HEAD"
            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git --tags"
+           sh "git request-pull HEAD https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex main"
         }
       }
     }
