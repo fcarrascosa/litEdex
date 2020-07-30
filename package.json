@@ -1,6 +1,6 @@
 {
   "name": "litedex",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A simple litElement Application to handle your Pokedex",
   "main": "index.js",
   "scripts": {
