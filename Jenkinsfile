@@ -78,7 +78,7 @@ pipeline {
       steps {
         sh 'git config user.name jenkins'
         sh 'npx standard-version'
-        withCredentials([userNamePassword(credentialsId: 'github', userNameVariable: 'Username', passwordVariable: 'Password')] {
+        withCredentials([userNamePassword(credentialsId: 'github', userNameVariable: 'Username', passwordVariable: 'Password')]) {
           sh "git push origin ${BRANCH_NAME}"
           sh "git push origin --tags"
         }
