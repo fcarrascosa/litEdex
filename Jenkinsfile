@@ -76,6 +76,7 @@ pipeline {
         branch pattern: "release\\/.*", comparator: "REGEXP"
       }
       steps {
+        sh 'git config user.name jenkins'
         sh 'npx standard-version'
         sh "git push origin ${BRANCH_NAME}"
         sh "git push origin --tags"
