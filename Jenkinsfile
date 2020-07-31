@@ -62,7 +62,7 @@ pipeline {
             stage("Store Url in Build Result") {
               steps {
                 script {
-                  def linkToEnv = '<a href="' + "https://demos.fcarrascosa.es/lit-edex/${env.BRANCH_NAME}" + '" target="_blank">Live Environment</a>'
+                  def linkToEnv = '[<a href="' + "https://demos.fcarrascosa.es/lit-edex/${env.BRANCH_NAME}" + '" target="_blank">Live Environment</a>]'
                   currentBuild.description = linkToEnv
                 }
               }
@@ -74,14 +74,44 @@ pipeline {
     stage('Generate Changelog and New Versions') {
       when {
         branch pattern: "release\\/.*", comparator: "REGEXP"
+        not {
+          changeset pattern: "**/CHANGELOG.md", caseSensitive: true
+        }
       }
       steps {
         sh 'git config user.name jenkins'
         sh 'npx standard-version'
         withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-           sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git HEAD"
-           sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git --tags"
-           sh "git request-pull HEAD https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex"
+          sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git ${BRANCH_NAME}"
+          sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/fcarrascosa/litEdex.git --tags"
+        }
+      }
+    }
+    stage('Create Pull Request to Main Branch') {
+      when {
+        branch pattern: "release\\/.*", comparator: "REGEXP"
+        not {
+          changeset pattern: "**/CHANGELOG.md", caseSensitive: true
+        }
+      }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+
+          script {
+            def nodePackageVersion = sh(script: "node -e 'console.log(require(\"./package.json\").version);'", returnStdout: true).trim()
+            echo nodePackageVersion;
+            sh """
+            curl --location --request POST "https://api.github.com/repos/fcarrascosa/litEdex/pulls" \
+                 --header "Authorization: Bearer ${GIT_PASSWORD}" \
+                 --header "Content-Type: application/json" \
+                 --data-raw '{
+                  "title": "Release ${nodePackageVersion}",
+                    "base": "main",
+                    "head": "release/0.0.x",
+                    "description": "Automatic PR generated to move ${nodePackageVersion} to main branch"
+                 }'
+            """
+          }
         }
       }
     }
