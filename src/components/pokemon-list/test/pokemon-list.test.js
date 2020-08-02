@@ -9,6 +9,6 @@ describe('pokemon-list component', () => {
   });
 
   it('should be instantiated properly', () => {
-    expect(el.constructor.is).to.equal('pokemon-lis');
+    expect(el.constructor.is).to.equal('pokemon-list');
   });
 });
