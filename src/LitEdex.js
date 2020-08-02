@@ -1,6 +1,18 @@
-import { LitElement, html, css } from 'lit-element';
+import { css, html, LitElement } from 'lit-element';
+import ApiConsumer from './utils/api-consumer/src/ApiConsumer.js';
 
 export class LitEdex extends LitElement {
+  constructor() {
+    super();
+    this.apiHandler = new ApiConsumer();
+    this.pokemonList = [];
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    this.pokemonList = await this.getPokemonList();
+  }
+
   static get properties() {
     return {
       title: { type: String },
@@ -14,6 +26,15 @@ export class LitEdex extends LitElement {
 
   static get styles() {
     return css``;
+  }
+
+  async getPokemonList() {
+    const { results } = await this.apiHandler.getPokemonList().catch(error => {
+      console.error(error);
+      return { results: [] };
+    });
+
+    return results.map((pokemon, i) => ({ ...pokemon, id: i + 1 }));
   }
 
   render() {
