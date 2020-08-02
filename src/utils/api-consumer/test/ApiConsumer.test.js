@@ -1,5 +1,5 @@
 import { expect } from '@open-wc/testing';
-import pokeApiMocks from './mocks/pokeapi.mock.js';
+import pokeApiMocks from '../../../../test/mocks/pokeapi.mock.js';
 import ApiConsumer from '../src/ApiConsumer.js';
 
 describe('ApiConsumer Class', () => {
