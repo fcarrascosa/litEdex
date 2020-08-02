@@ -5,21 +5,21 @@ import ApiConsumer from '../src/ApiConsumer.js';
 describe('ApiConsumer Class', () => {
   const baseUrl = 'https://pokeapi.co/api/v2/';
   let client;
-
+  let sandbox;
   beforeEach(() => {
     client = new ApiConsumer();
+    sandbox = sinon.createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   describe('fetch method', () => {
-    const sandbox = sinon.createSandbox();
-    const fetchStub = sandbox.stub(window, 'fetch');
+    let fetchStub;
 
-    afterEach(() => {
-      sandbox.reset();
-    });
-
-    after(() => {
-      sandbox.restore();
+    beforeEach(() => {
+      fetchStub = sandbox.stub(window, 'fetch');
     });
 
     describe('basic behavior', () => {
@@ -54,7 +54,6 @@ describe('ApiConsumer Class', () => {
   });
 
   describe('getPokemonList', () => {
-    const sandbox = sinon.createSandbox();
     let fetchStub;
 
     beforeEach(() => {
