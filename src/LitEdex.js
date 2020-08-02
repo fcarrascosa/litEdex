@@ -15,8 +15,8 @@ export class LitEdex extends LitElement {
 
   static get properties() {
     return {
-      title: { type: String },
-      page: { type: String },
+      apiHandler: { type: Function },
+      pokemonList: { type: Array },
     };
   }
 
