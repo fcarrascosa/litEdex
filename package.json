@@ -1,6 +1,6 @@
 {
   "name": "litedex",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A simple litElement Application to handle your Pokedex",
   "main": "index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "url": "https://github.com/fcarrascosa/litEdex/issues"
   },
   "homepage": "https://github.com/fcarrascosa/litEdex#readme",
+  "private": true,
   "dependencies": {
     "lit-element": "^2.0.1",
     "lit-html": "^1.0.0"
