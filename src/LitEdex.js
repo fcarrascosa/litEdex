@@ -8,6 +8,10 @@ export class LitEdex extends LitElement {
     this.pokemonList = [];
     this.loading = true;
     this.error = false;
+    this.author = 'Fernando Carrascosa';
+    this.yearInterval = `${new Date().getFullYear()} - ${
+      new Date().getFullYear() + 1
+    }`;
   }
 
   async connectedCallback() {
@@ -40,6 +44,15 @@ export class LitEdex extends LitElement {
         display: block;
         text-align: center;
         width: 100%;
+      }
+
+      .loading {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+        width: 100vw;
       }
 
       .container {
@@ -86,31 +99,38 @@ export class LitEdex extends LitElement {
 
   static renderLoading() {
     return html`
-      <div class="">
-        <p>Loading...</p>
-        <img
-          src="./assets/img/loading-mew.gif"
-          alt="rolling pokeball"
-          title="Loading..."
-        />
+      <div class="loading">
+        <div class="loading-content">
+          <p>Loading...</p>
+          <img
+            src="./assets/img/loading-mew.gif"
+            alt="rolling pokeball"
+            title="Loading..."
+          />
+        </div>
       </div>
     `;
   }
 
-  render() {
-    return html`
-      <header>
+  renderContent() {
+    return html` <header>
         <h1 class="container">LitEdex</h1>
       </header>
       <main>
-        ${this.loading ? LitEdex.renderLoading() : 'Data has been loaded'}
+        You gotta put something here, m8..
       </main>
       <footer>
         <p class="container">
           Made with <span>love</span> by
-          <a href="https://fcarrascosa.es">Fernando Carrascosa</a> | 2020-2021
+          <a href="https://fcarrascosa.es">${this.author}</a> |
+          ${this.yearInterval}
         </p>
-      </footer>
+      </footer>`;
+  }
+
+  render() {
+    return html`
+      ${this.loading ? LitEdex.renderLoading() : this.renderContent()}
     `;
   }
 }
