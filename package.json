@@ -58,6 +58,7 @@
     "prettier": "^2.0.4",
     "rimraf": "^2.6.3",
     "rollup": "^2.3.4",
+    "rollup-plugin-cpy": "^2.0.1",
     "semantic-release": "^17.1.0",
     "sinon": "^9.0.2"
   },
