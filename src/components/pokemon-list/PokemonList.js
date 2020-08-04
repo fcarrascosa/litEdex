@@ -33,12 +33,13 @@ export default class PokemonList extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     if (this.pagination && this.pokemonList) {
+      this.currentPage = this.currentPage || 1;
       this.pokemonPerPage = this.pokemonPerPage || 10;
       this.numberOfPages = Math.ceil(
         this.pokemonList.length / this.pokemonPerPage
       );
-      this.pokemonToShow = this.getPokemonToShow();
     }
+    this.pokemonToShow = this.getPokemonToShow();
   }
 
   static renderPokemon(pokemon) {
@@ -46,15 +47,21 @@ export default class PokemonList extends LitElement {
   }
 
   getPokemonToShow() {
-    const pokemonToShowLimits = {
-      max: this.pokemonPerPage * (this.currentPage - 1) + this.pokemonPerPage,
-      min: this.pokemonPerPage * (this.currentPage - 1),
-    };
+    let result = this.pokemonList;
 
-    return this.pokemonList.slice(
-      pokemonToShowLimits.min,
-      pokemonToShowLimits.max
-    );
+    if (this.pagination) {
+      const pokemonToShowLimits = {
+        max: this.pokemonPerPage * (this.currentPage - 1) + this.pokemonPerPage,
+        min: this.pokemonPerPage * (this.currentPage - 1),
+      };
+
+      result = this.pokemonList.slice(
+        pokemonToShowLimits.min,
+        pokemonToShowLimits.max
+      );
+    }
+
+    return result;
   }
 
   goToPage(page) {
@@ -98,7 +105,8 @@ export default class PokemonList extends LitElement {
         ${this.currentPage === 1
           ? null
           : html`<button
-              class="navigation-link"
+              data-page="${this.currentPage - 1}"
+              class="navigation-link previous-link"
               @click="${() => {
                 this.goToPage(this.currentPage - 1);
               }}"
@@ -109,7 +117,8 @@ export default class PokemonList extends LitElement {
         ${this.currentPage === this.numberOfPages
           ? null
           : html`<button
-              class="navigation-link"
+              data-page="${this.currentPage + 1}"
+              class="navigation-link next-link"
               @click="${() => {
                 this.goToPage(this.currentPage + 1);
               }}"

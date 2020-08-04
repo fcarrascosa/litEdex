@@ -133,6 +133,90 @@ describe('pokemon-list component', () => {
         );
       });
 
+      describe('pagination behavior', () => {
+        beforeEach(async () => {
+          const numberOfElements = 40;
+          const pokemonList = [];
+          while (pokemonList.length !== numberOfElements) {
+            pokemonList.push(...pokeApiMocks['/pokemon'].results);
+          }
+          el = await fixture(
+            html`<pokemon-list
+              .pokemonList="${pokemonList}"
+              pagination
+            ></pokemon-list>`
+          );
+          sandbox.spy(el, 'goToPage');
+        });
+
+        it('should not display a previous-link when in first-page', () => {
+          expect(el.shadowRoot.querySelector('.previous-link')).to.be.null;
+        });
+
+        it('should not display a next-link when in last-page', async () => {
+          el.currentPage = el.numberOfPages;
+          await el.render();
+          expect(el.shadowRoot.querySelector('.next-link')).to.be.null;
+        });
+
+        it('should call goToPage method when click on .next-link', () => {
+          el.shadowRoot.querySelector('.next-link').click();
+          expect(el.goToPage).to.have.been.calledOnce;
+          expect(el.goToPage).to.have.been.calledWith(2);
+        });
+
+        it('should call goToPage method when click on .next-link', () => {
+          el.shadowRoot.querySelector('.next-link').click();
+          expect(el.goToPage).to.have.been.calledOnce;
+          expect(el.goToPage).to.have.been.calledWith(2);
+        });
+
+        it('should call goToPage method when click on .previous-link', async () => {
+          el.currentPage = 2;
+          await el.render();
+          el.shadowRoot.querySelector('.previous-link').click();
+          expect(el.goToPage).to.have.been.calledOnce;
+          expect(el.goToPage).to.have.been.calledWith(1);
+        });
+
+        it('should call goToPage method when click on .navigation-link not .previous-link or next-link', () => {
+          el.shadowRoot
+            .querySelector(
+              '.navigation-link:not(.previous-link):not(.next-link)'
+            )
+            .click();
+          expect(el.goToPage).to.have.been.calledOnce;
+          expect(el.goToPage).to.have.been.calledWith(1);
+        });
+
+        describe('gotoPage method', () => {
+          it('should update currentPage to given argument', () => {
+            el.goToPage(2);
+            expect(el.currentPage).to.equal(2);
+          });
+
+          it('should dispatch an event', () => {
+            sandbox.spy(el, 'dispatchEvent');
+            el.goToPage(2);
+            expect(el.dispatchEvent).to.have.been.calledOnce;
+          });
+
+          it('shold dispatch an event with the propper pages info', done => {
+            const testData = {
+              oldPage: 1,
+              newPage: 2,
+            };
+
+            el.addEventListener('pokemon-list-go-to-page', e => {
+              expect(e.detail).to.be.deep.equal(testData);
+              done();
+            });
+
+            el.goToPage(2);
+          });
+        });
+      });
+
       describe('and pokemon-per-page is set', () => {
         beforeEach(async () => {
           el = await fixture(
