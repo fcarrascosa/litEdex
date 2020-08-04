@@ -31,7 +31,20 @@ export class LitEdex extends LitElement {
   }
 
   static get styles() {
-    return css``;
+    return css`
+      :host {
+        box-sizing: border-box;
+        display: block;
+        text-align: center;
+        width: 100%;
+      }
+
+      main {
+        margin: auto;
+        max-width: 960px;
+        width: 100%;
+      }
+    `;
   }
 
   async getPokemonList(pokemonPerPage, currentPage) {
