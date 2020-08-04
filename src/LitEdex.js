@@ -84,12 +84,27 @@ export class LitEdex extends LitElement {
     return count;
   }
 
+  static renderLoading() {
+    return html`
+      <div class="">
+        <p>Loading...</p>
+        <img
+          src="../assets/img/loading-mew.gif"
+          alt="rolling pokeball"
+          title="Loading..."
+        />
+      </div>
+    `;
+  }
+
   render() {
     return html`
       <header>
         <h1 class="container">LitEdex</h1>
       </header>
-      <main></main>
+      <main>
+        ${this.loading ? LitEdex.renderLoading() : 'Data has been loaded'}
+      </main>
       <footer>
         <p class="container">
           Made with <span>love</span> by
