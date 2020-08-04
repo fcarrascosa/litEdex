@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html, css } from 'lit-element';
 
 export default class PokemonList extends LitElement {
   static get is() {
@@ -15,6 +15,10 @@ export default class PokemonList extends LitElement {
       pagination: {
         type: Boolean,
         reflect: true,
+      },
+      pokemonToShow: {
+        type: Array,
+        attribute: false,
       },
       numberOfPages: { type: Number, attribute: false },
       pokemonList: { type: Array, attribute: false },
@@ -33,6 +37,7 @@ export default class PokemonList extends LitElement {
       this.numberOfPages = Math.ceil(
         this.pokemonList.length / this.pokemonPerPage
       );
+      this.pokemonToShow = this.getPokemonToShow();
     }
   }
 
@@ -40,37 +45,113 @@ export default class PokemonList extends LitElement {
     return html`<p>${pokemon.name}<br />${pokemon.url}</p>`;
   }
 
-  renderPagination() {
-    return html`
-      ${this.currentPage === 1
-        ? null
-        : html`<a href="#" class="navigation-link">Previous</a>`}
-      ${this.renderPaginationItems()}
-      ${this.currentPage === this.numberOfPages
-        ? null
-        : html`<a href="#" class="navigation-link">Next</a>`}
-    `;
+  getPokemonToShow() {
+    const pokemonToShowLimits = {
+      max: this.pokemonPerPage * (this.currentPage - 1) + this.pokemonPerPage,
+      min: this.pokemonPerPage * (this.currentPage - 1),
+    };
+
+    return this.pokemonList.slice(
+      pokemonToShowLimits.min,
+      pokemonToShowLimits.max
+    );
+  }
+
+  goToPage(page) {
+    this.dispatchEvent(
+      new CustomEvent('pokemon-list-go-to-page', {
+        composed: true,
+        bubbles: true,
+        detail: {
+          oldPage: this.currentPage,
+          newPage: page,
+        },
+      })
+    );
+    this.currentPage = page;
+    this.pokemonToShow = this.getPokemonToShow();
   }
 
   renderPaginationItems() {
     let paginationItems = '';
     for (let i = 0; i < this.numberOfPages; i += 1) {
       const page = i + 1;
-      paginationItems = html` ${paginationItems}
-        <a
-          href="#"
+      paginationItems = html`
+        ${paginationItems}
+        <button
           data-page="${page}"
           class="navigation-link ${this.currentPage === page ? 'active' : null}"
-          >${page}</a
-        >`;
+          @click="${() => {
+            this.goToPage(page);
+          }}"
+        >
+          ${page}
+        </button>
+      `;
     }
     return paginationItems;
+  }
+
+  renderPagination() {
+    return html`
+      <nav class="navigation">
+        ${this.currentPage === 1
+          ? null
+          : html`<button
+              class="navigation-link"
+              @click="${() => {
+                this.goToPage(this.currentPage - 1);
+              }}"
+            >
+              Previous
+            </button>`}
+        ${this.renderPaginationItems()}
+        ${this.currentPage === this.numberOfPages
+          ? null
+          : html`<button
+              class="navigation-link"
+              @click="${() => {
+                this.goToPage(this.currentPage + 1);
+              }}"
+            >
+              Next
+            </button>`}
+      </nav>
+    `;
+  }
+
+  renderPokemonToShow() {
+    return this.pokemonToShow.map(pokemon =>
+      PokemonList.renderPokemon(pokemon)
+    );
+  }
+
+  static get styles() {
+    return css`
+      .navigation {
+      }
+
+      .navigation .navigation-link {
+        appearance: none;
+        background: #e6e6e6;
+        border: solid 1px #7f7f7f;
+        border-radius: 3px;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .navigation .navigation-link:hover {
+        background: #555;
+        color: #fff;
+      }
+    `;
   }
 
   render() {
     return this.pokemonList
       ? html`
-          ${this.pokemonList.map(pokemon => PokemonList.renderPokemon(pokemon))}
+          ${this.renderPokemonToShow()}
           ${this.pagination ? this.renderPagination() : null}
         `
       : html`
