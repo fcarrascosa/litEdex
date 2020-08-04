@@ -23,36 +23,38 @@ describe('lit-edex component', () => {
     expect(el.constructor.is).to.equal('lit-edex');
   });
 
-  it('should instantiate the api candler', () => {
+  it('should instantiate the api handler', () => {
     expect(el.apiHandler).to.be.instanceOf(ApiConsumer);
   });
 
   describe('rendering behavior', () => {
     beforeEach(() => {
-      sandbox.stub(el, 'getPokemonList').resolves([]);
+      sandbox
+        .stub(el, 'getPokemonList')
+        .resolves(pokeApiMocks['/pokemon'].results);
+      sandbox
+        .stub(el, 'getPokemonCount')
+        .resolves(pokeApiMocks['/pokemon'].count);
     });
 
-    it('should call apiHandler when rendered', async () => {
+    it('should call getPokemonList when rendered', async () => {
       await el.connectedCallback();
       expect(el.getPokemonList.calledOnce).to.be.true;
     });
 
-    it('should set the pokemonList to the proper value when fetch succeeds', async () => {
-      el.getPokemonList.resolves(
-        pokeApiMocks['/pokemon'].results.map((item, i) => ({
-          ...item,
-          id: i + 1,
-        }))
-      );
+    it('should call getPokemonCount when rendered', async () => {
       await el.connectedCallback();
+      expect(el.getPokemonCount.calledOnce).to.be.true;
+    });
 
-      expect(el.pokemonList).to.deep.equal([
-        {
-          id: 1,
-          name: 'bulbasaur',
-          url: 'https://pokeapi.co/api/v2/pokemon/1/',
-        },
-      ]);
+    it('should set the pokemonList to the proper value when fetch succeeds', async () => {
+      expect(el.pokemonList).to.deep.equal(pokeApiMocks['/pokemon'].results);
+    });
+
+    it('should set the pokemonCount to the proper value when fetch succeeds', () => {
+      expect(el.totalAmountOfPokemon).to.deep.equal(
+        pokeApiMocks['/pokemon'].count
+      );
     });
   });
 
@@ -71,6 +73,35 @@ describe('lit-edex component', () => {
           sandbox.spy(window.console, 'error');
           await el.getPokemonList();
           expect(console.error.calledOnce).to.be.true;
+        });
+      });
+      describe('when fetch is successful', () => {
+        it('should return the pokemon list', async () => {
+          const result = await el.getPokemonList();
+          expect(result).to.deep.equal(pokeApiMocks['/pokemon'].results);
+        });
+      });
+    });
+    describe('getPokemonCount method', () => {
+      describe('when fetch returns an error', () => {
+        beforeEach(() => {
+          window.fetch.rejects();
+        });
+
+        it('should return an empty array', async () => {
+          const testItem = await el.getPokemonCount();
+          expect(testItem).to.equal(0);
+        });
+        it('should console an error', async () => {
+          sandbox.spy(window.console, 'error');
+          await el.getPokemonCount();
+          expect(console.error.calledOnce).to.be.true;
+        });
+      });
+      describe('when fetch is successful', () => {
+        it('should return the pokemon list', async () => {
+          const result = await el.getPokemonCount();
+          expect(result).to.deep.equal(pokeApiMocks['/pokemon'].count);
         });
       });
     });
