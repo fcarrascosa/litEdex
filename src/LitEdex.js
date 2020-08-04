@@ -16,10 +16,10 @@ export class LitEdex extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    this.totalAmountOfPokemon = await this.getPokemonCount();
     this.currentPage = this.getAttribute('current-page') || 1;
     this.pokemonPerPage = this.getAttribute('pokemon-per-page') || 20;
     this.pokemonList = await this.getPokemonList();
+    this.totalAmountOfPokemon = this.pokemonList.length;
     this.loading = false;
   }
 
@@ -28,7 +28,11 @@ export class LitEdex extends LitElement {
       apiHandler: { type: Function },
       pokemonList: { type: Array },
       currentPage: { type: Number },
-      pokemonPerPage: { type: Number },
+      pokemonPerPage: {
+        type: Number,
+        attribute: 'pokemon-per-page',
+        reflect: true,
+      },
       totalAmountOfPokemon: { type: Number },
     };
   }
@@ -63,10 +67,10 @@ export class LitEdex extends LitElement {
     `;
   }
 
-  async getPokemonList(pokemonPerPage, currentPage) {
+  async getPokemonList() {
     const queryOptions = {
-      limit: pokemonPerPage || this.pokemonPerPage,
-      offset: currentPage || this.currentPage * this.pokemonPerPage,
+      limit: Infinity,
+      offset: 0,
     };
 
     const { results } = await this.apiHandler
@@ -78,23 +82,6 @@ export class LitEdex extends LitElement {
       });
 
     return results;
-  }
-
-  async getPokemonCount() {
-    const queryOptions = {
-      limit: 1,
-      offset: 0,
-    };
-
-    const { count } = await this.apiHandler
-      .getPokemonList(queryOptions)
-      .catch(error => {
-        console.error(error);
-        this.error = true;
-        return { count: 0 };
-      });
-
-    return count;
   }
 
   static renderLoading() {

@@ -32,19 +32,11 @@ describe('lit-edex component', () => {
       sandbox
         .stub(el, 'getPokemonList')
         .resolves(pokeApiMocks['/pokemon'].results);
-      sandbox
-        .stub(el, 'getPokemonCount')
-        .resolves(pokeApiMocks['/pokemon'].count);
     });
 
     it('should call getPokemonList when rendered', async () => {
       await el.connectedCallback();
       expect(el.getPokemonList.calledOnce).to.be.true;
-    });
-
-    it('should call getPokemonCount when rendered', async () => {
-      await el.connectedCallback();
-      expect(el.getPokemonCount.calledOnce).to.be.true;
     });
 
     it('should set the pokemonList to the proper value when fetch succeeds', async () => {
@@ -53,7 +45,7 @@ describe('lit-edex component', () => {
 
     it('should set the pokemonCount to the proper value when fetch succeeds', () => {
       expect(el.totalAmountOfPokemon).to.deep.equal(
-        pokeApiMocks['/pokemon'].count
+        pokeApiMocks['/pokemon'].results.length
       );
     });
 
@@ -91,36 +83,6 @@ describe('lit-edex component', () => {
         it('should return the pokemon list', async () => {
           const result = await el.getPokemonList();
           expect(result).to.deep.equal(pokeApiMocks['/pokemon'].results);
-        });
-      });
-    });
-    describe('getPokemonCount method', () => {
-      describe('when fetch returns an error', () => {
-        beforeEach(() => {
-          window.fetch.rejects();
-        });
-
-        it('should return an empty array', async () => {
-          const testItem = await el.getPokemonCount();
-          expect(testItem).to.equal(0);
-        });
-
-        it('should set the error property to true', async () => {
-          el.error = false;
-          await el.getPokemonCount();
-          expect(el.error).to.be.true;
-        });
-
-        it('should console an error', async () => {
-          sandbox.spy(window.console, 'error');
-          await el.getPokemonCount();
-          expect(console.error.calledOnce).to.be.true;
-        });
-      });
-      describe('when fetch is successful', () => {
-        it('should return the pokemon list', async () => {
-          const result = await el.getPokemonCount();
-          expect(result).to.deep.equal(pokeApiMocks['/pokemon'].count);
         });
       });
     });
