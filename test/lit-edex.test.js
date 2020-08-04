@@ -69,6 +69,12 @@ describe('lit-edex component', () => {
           const testItem = await el.getPokemonList();
           expect(testItem).to.deep.equal([]);
         });
+        it('should set the error property to true', async () => {
+          el.error = false;
+          await el.getPokemonList();
+          expect(el.error).to.be.true;
+        });
+
         it('should console an error', async () => {
           sandbox.spy(window.console, 'error');
           await el.getPokemonList();
@@ -92,6 +98,13 @@ describe('lit-edex component', () => {
           const testItem = await el.getPokemonCount();
           expect(testItem).to.equal(0);
         });
+
+        it('should set the error property to true', async () => {
+          el.error = false;
+          await el.getPokemonCount();
+          expect(el.error).to.be.true;
+        });
+
         it('should console an error', async () => {
           sandbox.spy(window.console, 'error');
           await el.getPokemonCount();

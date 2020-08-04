@@ -6,6 +6,8 @@ export class LitEdex extends LitElement {
     super();
     this.apiHandler = new ApiConsumer();
     this.pokemonList = [];
+    this.loading = true;
+    this.error = false;
   }
 
   async connectedCallback() {
@@ -14,6 +16,7 @@ export class LitEdex extends LitElement {
     this.currentPage = this.getAttribute('current-page') || 1;
     this.pokemonPerPage = this.getAttribute('pokemon-per-page') || 20;
     this.pokemonList = await this.getPokemonList();
+    this.loading = false;
   }
 
   static get properties() {
@@ -57,6 +60,7 @@ export class LitEdex extends LitElement {
       .getPokemonList(queryOptions)
       .catch(error => {
         console.error(error);
+        this.error = true;
         return { results: [] };
       });
 
@@ -73,6 +77,7 @@ export class LitEdex extends LitElement {
       .getPokemonList(queryOptions)
       .catch(error => {
         console.error(error);
+        this.error = true;
         return { count: 0 };
       });
 
