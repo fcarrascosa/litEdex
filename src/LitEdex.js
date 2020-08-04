@@ -89,7 +89,7 @@ export class LitEdex extends LitElement {
       <div class="">
         <p>Loading...</p>
         <img
-          src="../assets/img/loading-mew.gif"
+          src="./assets/img/loading-mew.gif"
           alt="rolling pokeball"
           title="Loading..."
         />
