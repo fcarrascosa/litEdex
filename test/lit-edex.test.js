@@ -56,6 +56,12 @@ describe('lit-edex component', () => {
         pokeApiMocks['/pokemon'].count
       );
     });
+
+    it('should set the loading property to false', async () => {
+      el.loading = true;
+      await el.connectedCallback();
+      expect(el.loading).to.be.false;
+    });
   });
 
   describe('unit tests for methods', () => {
