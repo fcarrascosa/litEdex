@@ -39,7 +39,7 @@ export class LitEdex extends LitElement {
         width: 100%;
       }
 
-      main {
+      .container {
         margin: auto;
         max-width: 960px;
         width: 100%;
@@ -81,9 +81,16 @@ export class LitEdex extends LitElement {
 
   render() {
     return html`
-      <main>
-        <h1>LitEdex</h1>
-      </main>
+      <header>
+        <h1 class="container">LitEdex</h1>
+      </header>
+      <main></main>
+      <footer>
+        <p class="container">
+          Made with <span>love</span> by
+          <a href="https://fcarrascosa.es">Fernando Carrascosa</a> | 2020-2021
+        </p>
+      </footer>
     `;
   }
 }
