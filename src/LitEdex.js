@@ -1,5 +1,6 @@
 import { css, html, LitElement } from 'lit-element';
 import ApiConsumer from './utils/api-consumer/src/ApiConsumer.js';
+import './components/pokemon-list/pokemon-list.js';
 
 export class LitEdex extends LitElement {
   constructor() {
@@ -14,6 +15,24 @@ export class LitEdex extends LitElement {
     }`;
   }
 
+  static get is() {
+    return 'lit-edex';
+  }
+
+  static get properties() {
+    return {
+      apiHandler: { type: Function },
+      currentPage: { type: Number },
+      pokemonList: { type: Array },
+      pokemonPerPage: {
+        attribute: 'pokemon-per-page',
+        reflect: true,
+        type: Number,
+      },
+      totalAmountOfPokemon: { type: Number },
+    };
+  }
+
   async connectedCallback() {
     super.connectedCallback();
     this.totalAmountOfPokemon = await this.getPokemonCount();
@@ -21,24 +40,6 @@ export class LitEdex extends LitElement {
     this.pokemonPerPage = this.getAttribute('pokemon-per-page') || 20;
     this.pokemonList = await this.getPokemonList();
     this.loading = false;
-  }
-
-  static get properties() {
-    return {
-      apiHandler: { type: Function },
-      pokemonList: { type: Array },
-      currentPage: { type: Number },
-      pokemonPerPage: {
-        type: Number,
-        attribute: 'pokemon-per-page',
-        reflect: true,
-      },
-      totalAmountOfPokemon: { type: Number },
-    };
-  }
-
-  static get is() {
-    return 'lit-edex';
   }
 
   static get styles() {
@@ -51,6 +52,8 @@ export class LitEdex extends LitElement {
       }
 
       .loading {
+        background: #264653;
+        color: #fff;
         align-items: center;
         display: flex;
         flex-direction: column;
@@ -122,6 +125,12 @@ export class LitEdex extends LitElement {
       </header>
       <main>
         You gotta put something here, m8..
+        <pokemon-list
+          .pokemonList="${this.pokemonList}"
+          pokemon-per-page="${this.pokemonPerPage}"
+          current-page="${this.currentPage}"
+          pagination
+        ></pokemon-list>
       </main>
       <footer>
         <p class="container">
