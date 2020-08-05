@@ -211,7 +211,7 @@ export default class PokemonList extends LitElement {
         }
       }
 
-      @media (max-width: 375px) {
+      @media (max-width: 411px) {
         .pokemon-list .pokemon-list-item {
           width: 100%;
           margin: 0 0 15px;
