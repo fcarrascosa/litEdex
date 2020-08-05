@@ -136,6 +136,7 @@ export default class PokemonCard extends LitElement {
       .pokemon .pokemon-front,
       .pokemon .pokemon-back {
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden; /* Safari */
         border: solid 1px black;
         border-radius: calc(15px / 2);
       }
