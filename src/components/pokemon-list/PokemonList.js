@@ -222,6 +222,7 @@ export default class PokemonList extends LitElement {
         .pokemon-list .pokemon-list-item:last-child,
         .pokemon-list .pokemon-list-item:nth-child(5n + 1),
         .pokemon-list .pokemon-list-item:nth-child(5n) {
+          margin-left: 0;
           margin-right: 0;
         }
       }
