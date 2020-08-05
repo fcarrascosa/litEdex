@@ -216,6 +216,14 @@ export default class PokemonList extends LitElement {
           width: 100%;
           margin: 0 0 15px;
         }
+
+        .pokemon-list .pokemon-list-item:first-child,
+        .pokemon-list .pokemon-list-item:nth-child(3n + 1),
+        .pokemon-list .pokemon-list-item:last-child,
+        .pokemon-list .pokemon-list-item:nth-child(5n + 1),
+        .pokemon-list .pokemon-list-item:nth-child(5n) {
+          margin-right: 0;
+        }
       }
     `;
   }
