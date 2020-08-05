@@ -63,9 +63,16 @@ export class LitEdex extends LitElement {
       }
 
       .container {
+        box-sizing: border-box;
         margin: auto;
         max-width: 960px;
         width: 100%;
+      }
+
+      @media (max-width: 375px) {
+        .container {
+          padding: 1rem;
+        }
       }
     `;
   }
@@ -123,8 +130,7 @@ export class LitEdex extends LitElement {
     return html` <header>
         <h1 class="container">LitEdex</h1>
       </header>
-      <main>
-        You gotta put something here, m8..
+      <main class="container">
         <pokemon-list
           .pokemonList="${this.pokemonList}"
           pokemon-per-page="${this.pokemonPerPage}"

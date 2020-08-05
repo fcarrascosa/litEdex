@@ -4,7 +4,13 @@ export default class ApiConsumer {
   }
 
   async fetch(endpoint = '') {
-    const response = await fetch(`${this.baseUrl}${endpoint}`).catch(error => {
+    const url = `${this.baseUrl}${endpoint}`;
+    return ApiConsumer.unwrappedFetch(url);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  static async unwrappedFetch(url = '') {
+    const response = await fetch(`${url}`).catch(error => {
       throw error;
     });
     return response.json();

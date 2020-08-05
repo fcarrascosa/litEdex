@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import '../pokemon-card/pokemon-card.js';
 
 export default class PokemonList extends LitElement {
   static get is() {
@@ -43,7 +44,11 @@ export default class PokemonList extends LitElement {
   }
 
   static renderPokemon(pokemon) {
-    return html`<p>${pokemon.name}<br />${pokemon.url}</p>`;
+    return html`<pokemon-card
+      name="${pokemon.name}"
+      url="${pokemon.url}"
+      class="pokemon-list-item"
+    ></pokemon-card>`;
   }
 
   getPokemonToShow() {
@@ -137,6 +142,33 @@ export default class PokemonList extends LitElement {
 
   static get styles() {
     return css`
+      :host {
+        box-sizing: border-box;
+        display: block;
+        text-align: center;
+        width: 100%;
+      }
+
+      .pokemon-list {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .pokemon-list .pokemon-list-item {
+        width: calc(100% / 5 - 2rem - 2rem / 5);
+        margin: 1rem 1.5rem;
+      }
+
+      .pokemon-list .pokemon-list-item:first-child,
+      .pokemon-list .pokemon-list-item:nth-child(5n + 1) {
+        margin-left: 0;
+      }
+
+      .pokemon-list .pokemon-list-item:last-child,
+      .pokemon-list .pokemon-list-item:nth-child(5n) {
+        margin-right: 0;
+      }
+
       .navigation {
       }
 
@@ -154,13 +186,46 @@ export default class PokemonList extends LitElement {
         background: #555;
         color: #fff;
       }
+
+      @media (max-width: 768px) {
+        .pokemon-list .pokemon-list-item {
+          width: calc(100% / 3 - 2rem);
+        }
+
+        .pokemon-list .pokemon-list-item:first-child,
+        .pokemon-list .pokemon-list-item:nth-child(3n + 1) {
+          margin-left: 0 !important;
+        }
+
+        .pokemon-list .pokemon-list-item:last-child,
+        .pokemon-list .pokemon-list-item:nth-child(3n) {
+          margin-right: 0 !important;
+        }
+
+        .pokemon-list .pokemon-list-item:nth-child(5n + 1) {
+          margin-left: 1.5rem;
+        }
+
+        .pokemon-list .pokemon-list-item:nth-child(5n) {
+          margin-right: 1.5rem;
+        }
+      }
+
+      @media (max-width: 375px) {
+        .pokemon-list .pokemon-list-item {
+          width: 100%;
+          margin: 0 0 15px;
+        }
+      }
     `;
   }
 
   render() {
     return this.pokemonList
       ? html`
-          ${this.renderPokemonToShow()}
+          <div class="pokemon-list">
+            ${this.renderPokemonToShow()}
+          </div>
           ${this.pagination ? this.renderPagination() : null}
         `
       : html`
